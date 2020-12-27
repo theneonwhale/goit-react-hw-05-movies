@@ -16,6 +16,7 @@ import MovieCreditsSubView from '../../views/MovieCreditsSubView';
 import MovieReviewsSubView from '../../views/MovieReviewsSubView';
 import noPoster from '../../images/no-poster.jpg';
 import s from './MovieDetailsView.module.css';
+import Loader from '../../components/Loader/Loader';
 
 export default function MovieDetailsView() {
   const history = useHistory();
@@ -62,7 +63,7 @@ export default function MovieDetailsView() {
                   : noPoster
               }
               alt={movie.title}
-              // width="500"
+              width="300"
             />
             <div className={s.Description}>
               <h2>{movie.title}</h2>
@@ -91,15 +92,28 @@ export default function MovieDetailsView() {
           <div>
             <h3>Additional information</h3>
             <ul>
-              {/* <li>Cast</li> */}
               <li>
-                <NavLink to={`${url}/cast`}>Cast</NavLink>
+                <NavLink
+                  to={{
+                    pathname: `${url}/cast`,
+                    state: { from: location },
+                  }}
+                >
+                  Cast
+                </NavLink>
               </li>
               <li>
-                <NavLink to={`${url}/reviews`}>Reviews</NavLink>
+                <NavLink
+                  to={{
+                    pathname: `${url}/reviews`,
+                    state: { from: location },
+                  }}
+                >
+                  Reviews
+                </NavLink>
               </li>
             </ul>
-            <Suspense fallback={<h1>Загружаем подмаршрут...</h1>}>
+            <Suspense fallback={<Loader />}>
               <Switch>
                 <Route path={`${path}/cast`}>
                   {movie && <MovieCreditsSubView movie={movie} />}
