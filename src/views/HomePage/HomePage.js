@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import * as moviesAPI from '../../services/movies-api';
-import s from './HomeView.module.css';
+import s from './HomePage.module.css';
 import Loader from '../../components/Loader/Loader';
 
 const PageHeading = lazy(() =>
@@ -15,7 +15,7 @@ const LoadMore = lazy(() =>
   ),
 );
 
-export default function HomeView() {
+export default function HomePage() {
   const location = useLocation();
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [page, setPage] = useState(1);

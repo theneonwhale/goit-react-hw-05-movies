@@ -5,15 +5,15 @@ import Container from './components/Container/Container';
 import Loader from './components/Loader/Loader';
 import BackToTop from 'react-easy-back-to-top';
 
-const HomeView = lazy(() =>
-  import('./views/HomeView/HomeView' /* webpackChunkName: "home-view" */),
+const HomePage = lazy(() =>
+  import('./views/HomePage/HomePage' /* webpackChunkName: "home-view" */),
 );
-const MoviesView = lazy(() =>
-  import('./views/MoviesView/MoviesView' /* webpackChunkName: "movies-view" */),
+const MoviesPage = lazy(() =>
+  import('./views/MoviesPage/MoviesPage' /* webpackChunkName: "movies-view" */),
 );
-const MovieDetailsView = lazy(() =>
+const MovieDetailsPage = lazy(() =>
   import(
-    './views/MovieDetailsView/MovieDetailsView' /* webpackChunkName: "movie-details-view" */
+    './views/MovieDetailsPage/MovieDetailsPage' /* webpackChunkName: "movie-details-view" */
   ),
 );
 const NotFoundView = lazy(() =>
@@ -30,15 +30,15 @@ export default function App() {
       <Suspense fallback={<Loader />}>
         <Switch>
           <Route path="/" exact>
-            <HomeView />
+            <HomePage />
           </Route>
 
           <Route path="/movies" exact>
-            <MoviesView />
+            <MoviesPage />
           </Route>
 
           <Route path="/movies/:movieId">
-            <MovieDetailsView />
+            <MovieDetailsPage />
           </Route>
 
           <Route>

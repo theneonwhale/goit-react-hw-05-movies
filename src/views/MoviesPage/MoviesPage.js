@@ -2,7 +2,7 @@ import { useState, useEffect, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import * as moviesAPI from '../../services/movies-api';
 import { useHistory, useLocation } from 'react-router-dom';
-import s from './MoviesView.module.css';
+import s from './MoviesPage.module.css';
 import noPoster from '../../images/no-poster.jpg';
 import PageHeading from '../../components/PageHeading/PageHeading';
 import Searchbar from '../../components/Searchbar/Searchbar';
@@ -14,7 +14,7 @@ const ErrorNotification = lazy(() =>
   ),
 );
 
-export default function MoviesView() {
+export default function MoviesPage() {
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);

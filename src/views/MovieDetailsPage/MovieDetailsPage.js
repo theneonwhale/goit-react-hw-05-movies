@@ -9,24 +9,20 @@ import {
   useHistory,
 } from 'react-router-dom';
 import * as moviesAPI from '../../services/movies-api';
-import s from './MovieDetailsView.module.css';
+import s from './MovieDetailsPage.module.css';
 import noPoster from '../../images/no-poster.jpg';
 import Loader from '../../components/Loader/Loader';
 import { FaAngleLeft } from 'react-icons/fa';
 
-const MovieCastSubView = lazy(() =>
-  import(
-    '../MovieCastSubView/MovieCastSubView' /* webpackChunkName: "movie-credits" */
-  ),
+const Cast = lazy(() =>
+  import('../Cast/Cast' /* webpackChunkName: "movie-credits" */),
 );
 
-const MovieReviewsSubView = lazy(() =>
-  import(
-    '../MovieReviewsSubView/MovieReviewsSubView' /* webpackChunkName: "movie-reviews" */
-  ),
+const Reviews = lazy(() =>
+  import('../Reviews/Reviews' /* webpackChunkName: "movie-reviews" */),
 );
 
-export default function MovieDetailsView() {
+export default function MovieDetailsPage() {
   const history = useHistory();
   const location = useLocation();
   const { movieId } = useParams();
@@ -127,10 +123,10 @@ export default function MovieDetailsView() {
             <Suspense fallback={<Loader />}>
               <Switch>
                 <Route path={`${path}/cast`}>
-                  {movie && <MovieCastSubView movie={movie} />}
+                  {movie && <Cast movie={movie} />}
                 </Route>
                 <Route path={`${path}/reviews`}>
-                  {movie && <MovieReviewsSubView movie={movie} />}
+                  {movie && <Reviews movie={movie} />}
                 </Route>
               </Switch>
             </Suspense>

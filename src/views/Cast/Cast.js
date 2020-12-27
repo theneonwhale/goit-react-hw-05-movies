@@ -2,9 +2,9 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import * as moviesAPI from '../../services/movies-api';
 import noPhoto from '../../images/no-photo.jpg';
-import s from './MovieCastSubView.module.css';
+import s from './Cast.module.css';
 
-export default function MovieCastSubView() {
+export default function Cast() {
   const { movieId } = useParams();
   const [cast, setCast] = useState([]);
 
