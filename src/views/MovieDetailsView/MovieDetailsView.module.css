@@ -1,0 +1,15 @@
+.movieCard {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 1024px;
+}
+.movieCardMain {
+  display: flex;
+  /* padding: 10px; */
+  /* width: 1024px; */
+}
+.Description {
+  display: flex;
+  flex-direction: column;
+}
