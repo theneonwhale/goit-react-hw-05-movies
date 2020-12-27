@@ -26,9 +26,7 @@ export function fetchMovieDetails(movieId) {
   );
 }
 
-// https://api.themoviedb.org/3/movie/464052/credits?api_key=726653b8cacb73d155407508fdc35e60&language=en-US
-
-export function fetchMovieCredits(movieId) {
+export function fetchMovieCast(movieId) {
   return fetchWithErrorHandling(
     `${BASE_URL}/movie/${movieId}/credits?api_key=${API_KEY}`,
   );

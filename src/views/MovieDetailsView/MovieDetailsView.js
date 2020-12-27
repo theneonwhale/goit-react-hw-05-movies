@@ -8,15 +8,23 @@ import {
   useLocation,
   useHistory,
 } from 'react-router-dom';
-
 import * as moviesAPI from '../../services/movies-api';
-
-import PageHeading from '../../components/PageHeading/PageHeading';
-import MovieCreditsSubView from '../../views/MovieCreditsSubView';
-import MovieReviewsSubView from '../../views/MovieReviewsSubView';
-import noPoster from '../../images/no-poster.jpg';
 import s from './MovieDetailsView.module.css';
+import noPoster from '../../images/no-poster.jpg';
 import Loader from '../../components/Loader/Loader';
+import { FaAngleLeft } from 'react-icons/fa';
+
+const MovieCastSubView = lazy(() =>
+  import(
+    '../MovieCastSubView/MovieCastSubView' /* webpackChunkName: "movie-credits" */
+  ),
+);
+
+const MovieReviewsSubView = lazy(() =>
+  import(
+    '../MovieReviewsSubView/MovieReviewsSubView' /* webpackChunkName: "movie-reviews" */
+  ),
+);
 
 export default function MovieDetailsView() {
   const history = useHistory();
@@ -26,18 +34,14 @@ export default function MovieDetailsView() {
   const { url, path } = useRouteMatch();
 
   useEffect(() => {
-    // if (!movieId) return;
-    console.log(movieId);
-    console.log(url);
-    console.log(location);
-    console.log(history);
-
-    moviesAPI.fetchMovieDetails(movieId).then(movie => {
-      setMovie(movie);
-    });
-    // .then(setTrendingMovies);
+    moviesAPI
+      .fetchMovieDetails(movieId)
+      .then(movie => {
+        setMovie(movie);
+      })
+      .catch(error => console.log(error));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [movieId]);
+  }, []);
 
   const handleGoBack = () => {
     if (!location.state) {
@@ -49,9 +53,9 @@ export default function MovieDetailsView() {
 
   return (
     <div>
-      {/* <PageHeading text={movie.original_title} /> */}
-      <button onClick={handleGoBack} type="button">
-        Go back
+      <button onClick={handleGoBack} type="button" className={s.BackBtn}>
+        <FaAngleLeft />
+        <span className={s.GoBack}>Go back</span>
       </button>
       {movie && (
         <div className={s.movieCard}>
@@ -64,20 +68,23 @@ export default function MovieDetailsView() {
               }
               alt={movie.title}
               width="300"
+              className={s.MovieImg}
             />
             <div className={s.Description}>
-              <h2>{movie.title}</h2>
-              <h3>{movie.original_title}</h3>
-              <p>{movie.release_date.slice(0, 4)}</p>
-              <p>Rate: {movie.vote_average}</p>
-              <p>Tagline: {movie.tagline}</p>
+              <h2 className={s.MovieTitle}>{movie.title}</h2>
+              <h3 className={s.MovieOriginalTitle}>{movie.original_title}</h3>
+              <p className={s.MovieDetails}>{movie.release_date.slice(0, 4)}</p>
+              <p className={s.MovieDetails}>Rate: {movie.vote_average}</p>
+              {movie.tagline && (
+                <p className={s.MovieDetails}>Tagline: {movie.tagline}</p>
+              )}
 
-              <p>
+              <p className={s.MovieDetails}>
                 Budget: $
                 {movie.budget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               </p>
-              <p>Runtime: {movie.runtime} min</p>
-              <p>
+              <p className={s.MovieDetails}>Runtime: {movie.runtime} min</p>
+              <p className={s.MovieDetails}>
                 Genres:{' '}
                 {movie.genres
                   .reduce((acc, { name }) => {
@@ -86,18 +93,20 @@ export default function MovieDetailsView() {
                   }, [])
                   .join(', ')}
               </p>
-              <p>Storyline: {movie.overview}</p>
+              <p className={s.MovieDetails}>Storyline: {movie.overview}</p>
             </div>
           </div>
-          <div>
-            <h3>Additional information</h3>
-            <ul>
+          <div className={s.AdditionalInfo}>
+            <h3 className={s.AdditionalTitle}>Additional information</h3>
+            <ul className={s.AdditionalList}>
               <li>
                 <NavLink
                   to={{
                     pathname: `${url}/cast`,
-                    state: { from: location },
+                    state: { from: location.state ? location.state.from : '/' },
                   }}
+                  className={s.AdditionalListItem}
+                  activeClassName={s.activeLink}
                 >
                   Cast
                 </NavLink>
@@ -106,8 +115,10 @@ export default function MovieDetailsView() {
                 <NavLink
                   to={{
                     pathname: `${url}/reviews`,
-                    state: { from: location },
+                    state: { from: location.state ? location.state.from : '/' },
                   }}
+                  className={s.AdditionalListItem}
+                  activeClassName={s.activeLink}
                 >
                   Reviews
                 </NavLink>
@@ -116,7 +127,7 @@ export default function MovieDetailsView() {
             <Suspense fallback={<Loader />}>
               <Switch>
                 <Route path={`${path}/cast`}>
-                  {movie && <MovieCreditsSubView movie={movie} />}
+                  {movie && <MovieCastSubView movie={movie} />}
                 </Route>
                 <Route path={`${path}/reviews`}>
                   {movie && <MovieReviewsSubView movie={movie} />}

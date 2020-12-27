@@ -1,5 +1,5 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
-import { Link, NavLink, Route, useRouteMatch } from 'react-router-dom';
+import { useState, useEffect, lazy } from 'react';
+import { Link } from 'react-router-dom';
 import * as moviesAPI from '../../services/movies-api';
 import { useHistory, useLocation } from 'react-router-dom';
 import s from './MoviesView.module.css';
@@ -8,21 +8,24 @@ import PageHeading from '../../components/PageHeading/PageHeading';
 import Searchbar from '../../components/Searchbar/Searchbar';
 import LoadMore from '../../components/LoadMore/LoadMore';
 
+const ErrorNotification = lazy(() =>
+  import(
+    '../../components/ErrorNotification/ErrorNotification' /* webpackChunkName: "error-notification" */
+  ),
+);
+
 export default function MoviesView() {
-  const { url, path } = useRouteMatch();
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [totalMovies, setTotalMovies] = useState(0);
+  const [totalMovies, setTotalMovies] = useState(null);
 
   const history = useHistory();
   const location = useLocation();
 
   useEffect(() => {
     if (location.search === '') {
-      console.log('location.search', location.search);
       return;
     }
 
@@ -38,7 +41,9 @@ export default function MoviesView() {
       .then(({ results, total_results }) => {
         setMovies(movies => [...movies, ...results]);
         setTotalMovies(total_results - movies.length);
-      });
+      })
+      .catch(error => setError(error));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, page]);
 
   const handleFormSubmit = newQuery => {
@@ -48,6 +53,7 @@ export default function MoviesView() {
     setMovies([]);
     setPage(1);
     setError(null);
+    setTotalMovies(null);
     history.push({ ...location, search: `query=${newQuery}` });
   };
 
@@ -100,6 +106,8 @@ export default function MoviesView() {
           ))}
         </ul>
       )}
+      {error && <ErrorNotification message={error} />}
+      {totalMovies === 0 && <p>Nothing was found.</p>}
       {totalMovies > 20 && <LoadMore onLoadMore={onLoadMore} />}
     </>
   );

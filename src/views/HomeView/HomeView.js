@@ -1,13 +1,22 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { NavLink, useLocation, useRouteMatch } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import * as moviesAPI from '../../services/movies-api';
 import s from './HomeView.module.css';
-import PageHeading from '../../components/PageHeading/PageHeading';
-import LoadMore from '../../components/LoadMore/LoadMore';
+import Loader from '../../components/Loader/Loader';
+
+const PageHeading = lazy(() =>
+  import(
+    '../../components/PageHeading/PageHeading' /* webpackChunkName: "page-heading" */
+  ),
+);
+const LoadMore = lazy(() =>
+  import(
+    '../../components/LoadMore/LoadMore' /* webpackChunkName: "load-more" */
+  ),
+);
 
 export default function HomeView() {
   const location = useLocation();
-  const { url, path } = useRouteMatch();
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [totalMovies, setTotalMovies] = useState(0);
@@ -19,10 +28,10 @@ export default function HomeView() {
         setTrendingMovies(trendingMovies => [...trendingMovies, ...results]);
         setTotalMovies(total_results - trendingMovies.length);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const handleChangePage = () => {
-    console.log(location);
     setPage(page => page + 1);
   };
 
@@ -41,7 +50,7 @@ export default function HomeView() {
   };
 
   return (
-    <>
+    <Suspense fallback={<Loader />}>
       <PageHeading text="Trending movies today" />
       {trendingMovies && (
         <ul className={s.gallery}>
@@ -66,6 +75,6 @@ export default function HomeView() {
         </ul>
       )}
       {totalMovies > 20 && <LoadMore onLoadMore={onLoadMore} />}
-    </>
+    </Suspense>
   );
 }
